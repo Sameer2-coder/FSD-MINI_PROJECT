@@ -70,11 +70,11 @@ const Sidebar = ({ activeTab, setActiveTab, sidebarOpen, setSidebarOpen }) => {
                   setActiveTab(item.id)
                   setSidebarOpen(false)
                 }}
-                className="w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-200"
+                className="w-full flex items-center gap-3 h-12 px-4 text-sm font-medium rounded-xl transition-colors duration-200"
                 style={{
                   backgroundColor: activeTab === item.id ? 'var(--hover-bg)' : 'transparent',
                   color: activeTab === item.id ? 'var(--color-brand)' : 'var(--text-body)',
-                  borderRight: activeTab === item.id ? '2px solid var(--color-brand)' : 'none'
+                  border: activeTab === item.id ? '1px solid var(--color-brand)' : '1px solid transparent'
                 }}
                 onMouseEnter={(e) => {
                   if (activeTab !== item.id) {
@@ -89,7 +89,7 @@ const Sidebar = ({ activeTab, setActiveTab, sidebarOpen, setSidebarOpen }) => {
                   }
                 }}
               >
-                <svg className="mr-3 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
                 </svg>
                 {item.name}

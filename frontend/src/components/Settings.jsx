@@ -1,8 +1,12 @@
-import { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useState, useEffect, useRef } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { getTransactions, getTransactionStats, createTransaction } from '../store/slices/transactionSlice'
 
 const Settings = ({ darkMode, onToggleDarkMode }) => {
+  const dispatch = useDispatch()
   const { user } = useSelector(state => state.auth)
+  const { transactions, stats } = useSelector(state => state.transactions)
+  const fileInputRef = useRef(null)
   const [settings, setSettings] = useState(() => {
     // Load settings from localStorage
     const savedSettings = localStorage.getItem('appSettings')
@@ -109,8 +113,12 @@ const Settings = ({ darkMode, onToggleDarkMode }) => {
   }
 
   const handleExportData = () => {
-    // In a real app, this would export actual data
-    const dataStr = JSON.stringify({ message: 'Export functionality would be implemented here' }, null, 2)
+    const payload = {
+      exportedAt: new Date().toISOString(),
+      transactions: transactions || [],
+      stats: stats || null
+    }
+    const dataStr = JSON.stringify(payload, null, 2)
     const dataBlob = new Blob([dataStr], { type: 'application/json' })
     const url = URL.createObjectURL(dataBlob)
     const link = document.createElement('a')
@@ -118,6 +126,50 @@ const Settings = ({ darkMode, onToggleDarkMode }) => {
     link.download = 'finance-data-export.json'
     link.click()
     URL.revokeObjectURL(url)
+  }
+
+  const handleImportClick = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    try {
+      const text = await file.text()
+      const json = JSON.parse(text)
+      const items = Array.isArray(json) ? json : (json.transactions || [])
+      if (!Array.isArray(items) || items.length === 0) {
+        alert('No transactions found in file.')
+        return
+      }
+      for (const item of items) {
+        const data = {
+          type: item.type,
+          category: item.category,
+          amount: item.amount,
+          description: item.description,
+          date: item.date
+        }
+        try {
+          // eslint-disable-next-line no-await-in-loop
+          await dispatch(createTransaction(data)).unwrap()
+        } catch (_) {}
+      }
+      await dispatch(getTransactions({ page: 1, limit: 100 }))
+      await dispatch(getTransactionStats())
+      alert('Import completed.')
+    } catch (err) {
+      alert('Failed to import file.')
+    } finally {
+      e.target.value = ''
+    }
+  }
+
+  const handleSync = async () => {
+    await dispatch(getTransactions({ page: 1, limit: 100 }))
+    await dispatch(getTransactionStats())
+    alert('Synced latest data.')
   }
 
   return (
@@ -396,6 +448,13 @@ const Settings = ({ darkMode, onToggleDarkMode }) => {
             }}
           >
             <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--text-heading)' }}>Quick Actions</h3>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="application/json"
+              onChange={handleFileChange}
+              className="hidden"
+            />
             <div className="space-y-3">
               <button
                 onClick={handleExportData}
@@ -419,6 +478,7 @@ const Settings = ({ darkMode, onToggleDarkMode }) => {
               </button>
               
               <button 
+                onClick={handleImportClick}
                 className="w-full flex items-center justify-center px-4 py-2 border rounded-lg text-sm font-medium transition-colors"
                 style={{ 
                   borderColor: 'var(--border-color)',
