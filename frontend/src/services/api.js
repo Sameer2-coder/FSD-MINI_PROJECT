@@ -31,9 +31,12 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       // Token expired or invalid
+      const isAuthRoute = error.config?.url?.includes('/auth/login') || error.config?.url?.includes('/auth/register');
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      window.location.href = '/login';
+      if (!isAuthRoute) {
+        // Let the app render auth screens based on state
+      }
     }
     return Promise.reject(error);
   }
