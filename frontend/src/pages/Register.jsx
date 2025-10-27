@@ -27,6 +27,13 @@ const Register = ({ onSwitchToLogin }) => {
       return
     }
 
+    // Enforce backend password policy client-side for better UX
+    const pwPolicy = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/
+    if (!pwPolicy.test(formData.password)) {
+      setValidationError('Password must contain at least one lowercase letter, one uppercase letter, and one number')
+      return
+    }
+
     try {
       await dispatch(register({
         name: formData.name,

@@ -243,10 +243,10 @@ const Settings = ({ darkMode, onToggleDarkMode }) => {
                     }}
                   >
                     <span
-                      className="inline-block h-4 w-4 transform rounded-full transition-transform"
+                      className="absolute left-1 top-1 h-4 w-4 transform rounded-full transition-transform"
                       style={{
                         backgroundColor: 'white',
-                        transform: darkMode ? 'translateX(1.5rem)' : 'translateX(0.25rem)',
+                        transform: darkMode ? 'translateX(1.5rem)' : 'translateX(0)',
                         boxShadow: '0 1px 3px rgba(0, 0, 0, 0.2)'
                       }}
                     />
@@ -266,10 +266,10 @@ const Settings = ({ darkMode, onToggleDarkMode }) => {
                     }}
                   >
                     <span
-                      className="inline-block h-4 w-4 transform rounded-full transition-transform"
+                      className="absolute left-1 top-1 h-4 w-4 transform rounded-full transition-transform"
                       style={{
                         backgroundColor: 'white',
-                        transform: settings.autoBackup ? 'translateX(1.5rem)' : 'translateX(0.25rem)',
+                        transform: settings.autoBackup ? 'translateX(1.5rem)' : 'translateX(0)',
                         boxShadow: '0 1px 3px rgba(0, 0, 0, 0.2)'
                       }}
                     />
@@ -303,10 +303,10 @@ const Settings = ({ darkMode, onToggleDarkMode }) => {
                   }}
                 >
                   <span
-                    className="inline-block h-4 w-4 transform rounded-full transition-transform"
+                    className="absolute left-1 top-1 h-4 w-4 transform rounded-full transition-transform"
                     style={{
                       backgroundColor: 'white',
-                      transform: settings.notifications ? 'translateX(1.5rem)' : 'translateX(0.25rem)',
+                      transform: settings.notifications ? 'translateX(1.5rem)' : 'translateX(0)',
                       boxShadow: '0 1px 3px rgba(0, 0, 0, 0.2)'
                     }}
                   />
@@ -326,10 +326,10 @@ const Settings = ({ darkMode, onToggleDarkMode }) => {
                   }}
                 >
                   <span
-                    className="inline-block h-4 w-4 transform rounded-full transition-transform"
+                    className="absolute left-1 top-1 h-4 w-4 transform rounded-full transition-transform"
                     style={{
                       backgroundColor: 'white',
-                      transform: settings.notificationSounds ? 'translateX(1.5rem)' : 'translateX(0.25rem)',
+                      transform: settings.notificationSounds ? 'translateX(1.5rem)' : 'translateX(0)',
                       boxShadow: '0 1px 3px rgba(0, 0, 0, 0.2)'
                     }}
                   />
@@ -349,10 +349,10 @@ const Settings = ({ darkMode, onToggleDarkMode }) => {
                   }}
                 >
                   <span
-                    className="inline-block h-4 w-4 transform rounded-full transition-transform"
+                    className="absolute left-1 top-1 h-4 w-4 transform rounded-full transition-transform"
                     style={{
                       backgroundColor: 'white',
-                      transform: settings.budgetAlerts ? 'translateX(1.5rem)' : 'translateX(0.25rem)',
+                      transform: settings.budgetAlerts ? 'translateX(1.5rem)' : 'translateX(0)',
                       boxShadow: '0 1px 3px rgba(0, 0, 0, 0.2)'
                     }}
                   />
@@ -372,10 +372,10 @@ const Settings = ({ darkMode, onToggleDarkMode }) => {
                   }}
                 >
                   <span
-                    className="inline-block h-4 w-4 transform rounded-full transition-transform"
+                    className="absolute left-1 top-1 h-4 w-4 transform rounded-full transition-transform"
                     style={{
                       backgroundColor: 'white',
-                      transform: settings.emailReports ? 'translateX(1.5rem)' : 'translateX(0.25rem)',
+                      transform: settings.emailReports ? 'translateX(1.5rem)' : 'translateX(0)',
                       boxShadow: '0 1px 3px rgba(0, 0, 0, 0.2)'
                     }}
                   />

@@ -1,8 +1,13 @@
 import axios from 'axios';
 
 // Create axios instance
+const isBrowser = typeof window !== 'undefined';
+const isLocalhost = isBrowser && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+const resolvedBaseURL = import.meta.env.VITE_API_URL
+  || (isBrowser && !isLocalhost ? '/api' : 'http://localhost:5000/api');
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+  baseURL: resolvedBaseURL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',

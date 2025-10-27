@@ -99,19 +99,27 @@ const Header = ({ sidebarOpen, setSidebarOpen, balance, user }) => {
               onClick={() => setShowNotifications(true)}
               className="p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-inset relative"
               style={{ 
-                color: 'var(--text-body)',
+                color: 'var(--text-heading)',
                 focusRingColor: 'var(--color-brand)'
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor = 'var(--hover-bg)'
-                e.currentTarget.style.color = 'var(--text-heading)'
+                e.currentTarget.style.color = 'var(--color-brand)'
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor = 'transparent'
-                e.currentTarget.style.color = 'var(--text-body)'
+                e.currentTarget.style.color = 'var(--text-heading)'
               }}
             >
-              <i className="fas fa-bell text-xl" style={{ color: unreadCount > 0 ? '#FFD700' : 'var(--text-muted)' }}></i>
+              <svg
+                className="h-6 w-6"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+                style={{ fill: '#FFD700', filter: 'drop-shadow(0 1px 1px rgba(0,0,0,0.2))' }}
+              >
+                <path d="M12 22a2 2 0 0 0 2-2h-4a2 2 0 0 0 2 2zm6-6V11a6 6 0 1 0-12 0v5l-2 2v1h16v-1l-2-2z" />
+              </svg>
               {unreadCount > 0 && (
                 <span 
                   className="absolute top-0 right-0 flex items-center justify-center h-5 w-5 text-xs font-bold text-white rounded-full"

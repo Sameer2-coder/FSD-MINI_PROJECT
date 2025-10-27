@@ -20,9 +20,12 @@ export const register = createAsyncThunk(
       localStorage.setItem('user', JSON.stringify(response.data.data.user));
       return response.data.data;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || 'Registration failed'
-      );
+      const resp = error.response?.data;
+      const validationMsg = Array.isArray(resp?.errors)
+        ? resp.errors.map(e => e.message).join(', ')
+        : undefined;
+      const message = resp?.message || validationMsg || error.message || 'Registration failed';
+      return rejectWithValue(message);
     }
   }
 );
