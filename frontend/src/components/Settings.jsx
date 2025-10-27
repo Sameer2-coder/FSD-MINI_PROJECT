@@ -201,6 +201,7 @@ const Settings = ({ darkMode, onToggleDarkMode }) => {
                   }}
                 >
                   <option value="USD">USD ($)</option>
+                  <option value="INR">INR (₹)</option>
                   <option value="EUR">EUR (€)</option>
                   <option value="GBP">GBP (£)</option>
                   <option value="JPY">JPY (¥)</option>
@@ -236,7 +237,7 @@ const Settings = ({ darkMode, onToggleDarkMode }) => {
                   </div>
                   <button
                     onClick={onToggleDarkMode}
-                    className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+                    className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors overflow-hidden"
                     style={{
                       backgroundColor: darkMode ? 'var(--color-brand)' : 'var(--border-color)'
                     }}
@@ -259,7 +260,7 @@ const Settings = ({ darkMode, onToggleDarkMode }) => {
                   </div>
                   <button
                     onClick={() => handleSettingChange('autoBackup', !settings.autoBackup)}
-                    className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+                    className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors overflow-hidden"
                     style={{
                       backgroundColor: settings.autoBackup ? 'var(--color-brand)' : 'var(--border-color)'
                     }}
@@ -296,7 +297,7 @@ const Settings = ({ darkMode, onToggleDarkMode }) => {
                 </div>
                 <button
                   onClick={() => handleSettingChange('notifications', !settings.notifications)}
-                  className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+                  className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors overflow-hidden"
                   style={{
                     backgroundColor: settings.notifications ? 'var(--color-brand)' : 'var(--border-color)'
                   }}
@@ -319,7 +320,7 @@ const Settings = ({ darkMode, onToggleDarkMode }) => {
                 </div>
                 <button
                   onClick={() => handleSettingChange('notificationSounds', !settings.notificationSounds)}
-                  className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+                  className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors overflow-hidden"
                   style={{
                     backgroundColor: settings.notificationSounds ? 'var(--color-brand)' : 'var(--border-color)'
                   }}
@@ -342,7 +343,7 @@ const Settings = ({ darkMode, onToggleDarkMode }) => {
                 </div>
                 <button
                   onClick={() => handleSettingChange('budgetAlerts', !settings.budgetAlerts)}
-                  className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+                  className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors overflow-hidden"
                   style={{
                     backgroundColor: settings.budgetAlerts ? 'var(--color-brand)' : 'var(--border-color)'
                   }}
@@ -365,7 +366,7 @@ const Settings = ({ darkMode, onToggleDarkMode }) => {
                 </div>
                 <button
                   onClick={() => handleSettingChange('emailReports', !settings.emailReports)}
-                  className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+                  className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors overflow-hidden"
                   style={{
                     backgroundColor: settings.emailReports ? 'var(--color-brand)' : 'var(--border-color)'
                   }}

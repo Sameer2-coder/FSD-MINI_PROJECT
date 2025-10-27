@@ -393,7 +393,7 @@ const Transactions = () => {
                           value={form.category}
                           onChange={(e) => setForm(f => ({ ...f, category: e.target.value }))}
                           placeholder="e.g., Salary, Food, Transport"
-                          className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:border-2 ${formErrors.category ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'}`}
+                          className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:border-2 text-gray-900 ${formErrors.category ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'}`}
                         />
                         {formErrors.category && <p className="mt-1 text-xs text-red-600">{formErrors.category}</p>}
                       </div>
@@ -411,7 +411,7 @@ const Transactions = () => {
                             min="0"
                             step="0.01"
                             placeholder="0.00"
-                            className={`w-full pl-7 pr-3 py-2 border rounded-lg focus:ring-2 focus:border-2 ${formErrors.amount ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'}`}
+                            className={`w-full pl-7 pr-3 py-2 border rounded-lg focus:ring-2 focus:border-2 text-gray-900 ${formErrors.amount ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'}`}
                           />
                         </div>
                         {formErrors.amount && <p className="mt-1 text-xs text-red-600">{formErrors.amount}</p>}
@@ -425,7 +425,7 @@ const Transactions = () => {
                           name="date"
                           value={form.date}
                           onChange={(e) => setForm(f => ({ ...f, date: e.target.value }))}
-                          className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:border-2 ${formErrors.date ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'}`}
+                          className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:border-2 text-gray-900 ${formErrors.date ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'}`}
                         />
                         {formErrors.date && <p className="mt-1 text-xs text-red-600">{formErrors.date}</p>}
                       </div>
@@ -439,7 +439,7 @@ const Transactions = () => {
                           value={form.description}
                           onChange={(e) => setForm(f => ({ ...f, description: e.target.value }))}
                           placeholder="Transaction description"
-                          className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:border-2 ${formErrors.description ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'}`}
+                          className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:border-2 text-gray-900 ${formErrors.description ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200'}`}
                         />
                         {formErrors.description && <p className="mt-1 text-xs text-red-600">{formErrors.description}</p>}
                       </div>
