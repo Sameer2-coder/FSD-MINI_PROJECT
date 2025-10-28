@@ -1,16 +1,18 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { createTransaction, deleteTransaction as deleteTransactionAction, getTransactions } from '../store/slices/transactionSlice'
 import notificationService from '../utils/notificationService'
+import { formatCurrency, formatDate, getCurrencySymbol, getAppSettings } from '../utils/formatters'
 
 const Transactions = () => {
   const dispatch = useDispatch()
   const { transactions, loading, error } = useSelector(state => state.transactions)
+  const [settingsVersion, setSettingsVersion] = useState(0)
   
   const [showAddModal, setShowAddModal] = useState(false)
   const [filter, setFilter] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
-  const [sortBy, setSortBy] = useState('date')
+  const [sortBy, setSortBy] = useState('amount')
   const [sortOrder, setSortOrder] = useState('desc')
 
   // Local form state for improved UX
@@ -24,6 +26,12 @@ const Transactions = () => {
   const [formErrors, setFormErrors] = useState({})
   const [submitting, setSubmitting] = useState(false)
 
+  useEffect(() => {
+    const onSettingsChanged = () => setSettingsVersion(v => v + 1)
+    window.addEventListener('appSettingsChanged', onSettingsChanged)
+    return () => window.removeEventListener('appSettingsChanged', onSettingsChanged)
+  }, [])
+
   // Filter and sort transactions - add null check
   const filteredTransactions = (transactions || [])
     .filter(transaction => {
@@ -33,15 +41,19 @@ const Transactions = () => {
       return matchesFilter && matchesSearch
     })
     .sort((a, b) => {
+      const getTime = (d) => new Date(d).getTime() || 0
       let comparison = 0
       if (sortBy === 'date') {
-        comparison = new Date(a.date) - new Date(b.date)
+        comparison = getTime(a.date) - getTime(b.date)
       } else if (sortBy === 'amount') {
-        comparison = a.amount - b.amount
+        const aNum = Math.abs(Number(a.amount) || 0)
+        const bNum = Math.abs(Number(b.amount) || 0)
+        comparison = aNum - bNum
       } else if (sortBy === 'category') {
-        comparison = a.category.localeCompare(b.category)
+        comparison = String(a.category || '').localeCompare(String(b.category || ''))
       }
-      return sortOrder === 'desc' ? -comparison : comparison
+      if (sortOrder === 'desc') comparison = -comparison
+      return comparison
     })
 
   const handleAddTransaction = async (e) => {
@@ -287,14 +299,12 @@ const Transactions = () => {
                     <div 
                       className="h-10 w-10 rounded-full flex items-center justify-center"
                       style={{
-                        backgroundColor: transaction.type === 'income' ? 'var(--color-success)' : 'var(--color-danger)',
-                        opacity: 0.1
+                        backgroundColor: 'var(--hover-bg)'
                       }}
                     >
-                      <i 
-                        className={`fas ${transaction.type === 'income' ? 'fa-arrow-up' : 'fa-arrow-down'} text-lg`}
-                        style={{ color: transaction.type === 'income' ? 'var(--color-success)' : 'var(--color-danger)' }}
-                      ></i>
+                      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" style={{ color: 'var(--color-brand)' }}>
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12h18M5 8h10M7 16h6"/>
+                      </svg>
                     </div>
                     <div>
                       <p className="text-sm font-medium" style={{ color: 'var(--text-heading)' }}>{transaction.description}</p>
@@ -308,9 +318,9 @@ const Transactions = () => {
                         className="text-sm font-semibold"
                         style={{ color: transaction.type === 'income' ? 'var(--color-success)' : 'var(--color-danger)' }}
                       >
-                        {transaction.type === 'income' ? '+' : '-'}${Math.abs(transaction.amount).toLocaleString()}
+                        {transaction.type === 'income' ? '+' : '-'}{formatCurrency(Math.abs(transaction.amount))}
                       </p>
-                      <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{new Date(transaction.date).toLocaleDateString()}</p>
+                      <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{formatDate(transaction.date)}</p>
                     </div>
                     
                     <button
@@ -402,7 +412,7 @@ const Transactions = () => {
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Amount</label>
                         <div className="relative">
-                          <span className="absolute left-3 top-2.5 text-gray-400">$</span>
+                          <span className="absolute left-3 top-2.5 text-gray-400">{getCurrencySymbol()}</span>
                           <input
                             type="number"
                             name="amount"
@@ -419,7 +429,8 @@ const Transactions = () => {
 
                       {/* Date */}
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                      <p className="text-xs text-gray-500 mb-2">Format: {getAppSettings().dateFormat}</p>
                         <input
                           type="date"
                           name="date"

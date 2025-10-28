@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getTransactions, getTransactionStats, createTransaction } from '../store/slices/transactionSlice'
+import { updatePassword as updatePasswordThunk } from '../store/slices/authSlice'
 
 const Settings = ({ darkMode, onToggleDarkMode }) => {
   const dispatch = useDispatch()
@@ -14,7 +15,7 @@ const Settings = ({ darkMode, onToggleDarkMode }) => {
       return JSON.parse(savedSettings)
     }
     return {
-      currency: 'USD',
+      currency: 'INR',
       dateFormat: 'MM/DD/YYYY',
       notifications: true,
       notificationSounds: true,
@@ -53,6 +54,8 @@ const Settings = ({ darkMode, onToggleDarkMode }) => {
       }
       // Save to localStorage
       localStorage.setItem('appSettings', JSON.stringify(newSettings))
+      // Notify app that settings changed
+      window.dispatchEvent(new Event('appSettingsChanged'))
       return newSettings
     })
     
@@ -97,7 +100,7 @@ const Settings = ({ darkMode, onToggleDarkMode }) => {
     }
   }
 
-  const handlePasswordChange = (e) => {
+  const handlePasswordChange = async (e) => {
     e.preventDefault()
     if (passwords.new !== passwords.confirm) {
       alert('New passwords do not match!')
@@ -107,9 +110,14 @@ const Settings = ({ darkMode, onToggleDarkMode }) => {
       alert('Password must be at least 8 characters long!')
       return
     }
-    alert('Password changed successfully!')
-    setPasswords({ current: '', new: '', confirm: '' })
-    setShowChangePassword(false)
+    try {
+      await dispatch(updatePasswordThunk({ currentPassword: passwords.current, newPassword: passwords.new })).unwrap()
+      alert('Password changed successfully!')
+      setPasswords({ current: '', new: '', confirm: '' })
+      setShowChangePassword(false)
+    } catch (err) {
+      alert(typeof err === 'string' ? err : 'Failed to change password')
+    }
   }
 
   const handleExportData = () => {

@@ -62,7 +62,7 @@ const Sidebar = ({ activeTab, setActiveTab, sidebarOpen, setSidebarOpen }) => {
       >
         <div className="flex flex-col h-full pt-16 lg:pt-0">
           {/* Navigation */}
-          <nav className="flex-1 px-4 py-6 space-y-2">
+          <nav className="flex-1 px-4 pt-6 pb-10 space-y-2">
             {menuItems.map((item) => (
               <button
                 key={item.id}
@@ -70,7 +70,7 @@ const Sidebar = ({ activeTab, setActiveTab, sidebarOpen, setSidebarOpen }) => {
                   setActiveTab(item.id)
                   setSidebarOpen(false)
                 }}
-                className="w-full flex items-center gap-3 h-12 px-4 text-sm font-medium rounded-xl transition-colors duration-200"
+                className="w-full flex items-center justify-start gap-3 h-12 px-4 text-sm font-medium leading-none rounded-xl transition-colors duration-200 focus:outline-none focus:ring-0 focus-visible:outline-none"
                 style={{
                   backgroundColor: activeTab === item.id ? 'var(--hover-bg)' : 'transparent',
                   color: activeTab === item.id ? 'var(--color-brand)' : 'var(--text-body)',
@@ -78,21 +78,23 @@ const Sidebar = ({ activeTab, setActiveTab, sidebarOpen, setSidebarOpen }) => {
                 }}
                 onMouseEnter={(e) => {
                   if (activeTab !== item.id) {
-                    e.target.style.backgroundColor = 'var(--hover-bg)'
-                    e.target.style.color = 'var(--text-heading)'
+                    e.currentTarget.style.backgroundColor = 'var(--hover-bg)'
+                    e.currentTarget.style.color = 'var(--text-heading)'
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (activeTab !== item.id) {
-                    e.target.style.backgroundColor = 'transparent'
-                    e.target.style.color = 'var(--text-body)'
+                    e.currentTarget.style.backgroundColor = 'transparent'
+                    e.currentTarget.style.color = 'var(--text-body)'
                   }
                 }}
               >
-                <svg className="h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
-                </svg>
-                {item.name}
+                <span className="w-6 flex items-center justify-center flex-shrink-0">
+                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
+                  </svg>
+                </span>
+                <span className="truncate">{item.name}</span>
               </button>
             ))}
           </nav>

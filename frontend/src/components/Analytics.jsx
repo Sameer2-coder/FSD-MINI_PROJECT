@@ -1,9 +1,17 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useSelector } from 'react-redux'
+import { formatCurrency, formatDate } from '../utils/formatters'
 
 const Analytics = () => {
   const { transactions } = useSelector(state => state.transactions)
   const [timeRange, setTimeRange] = useState('month')
+  const [settingsVersion, setSettingsVersion] = useState(0)
+
+  useEffect(() => {
+    const onSettingsChanged = () => setSettingsVersion(v => v + 1)
+    window.addEventListener('appSettingsChanged', onSettingsChanged)
+    return () => window.removeEventListener('appSettingsChanged', onSettingsChanged)
+  }, [])
   const [chartType, setChartType] = useState('category')
 
   // Calculate analytics data
@@ -59,7 +67,7 @@ const Analytics = () => {
         .reduce((sum, t) => sum + t.amount, 0))
       
       monthlyTrends.push({
-        month: date.toLocaleDateString('en-US', { month: 'short' }),
+        month: formatDate(date).slice(0, 3),
         income: monthIncome,
         expenses: monthExpenses,
         net: monthIncome - monthExpenses
@@ -141,7 +149,7 @@ const Analytics = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium" style={{ color: 'var(--text-muted)' }}>Total Income</p>
-              <p className="text-2xl font-bold" style={{ color: 'var(--color-success)' }}>${analyticsData.income.toLocaleString()}</p>
+              <p className="text-2xl font-bold" style={{ color: 'var(--color-success)' }}>{formatCurrency(analyticsData.income)}</p>
             </div>
             <div className="h-12 w-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'var(--color-success)', opacity: 0.1 }}>
               <i className="fas fa-arrow-up text-2xl" style={{ color: 'var(--color-success)' }}></i>
@@ -160,7 +168,7 @@ const Analytics = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium" style={{ color: 'var(--text-muted)' }}>Total Expenses</p>
-              <p className="text-2xl font-bold" style={{ color: 'var(--color-danger)' }}>${analyticsData.expenses.toLocaleString()}</p>
+              <p className="text-2xl font-bold" style={{ color: 'var(--color-danger)' }}>{formatCurrency(analyticsData.expenses)}</p>
             </div>
             <div className="h-12 w-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'var(--color-danger)', opacity: 0.1 }}>
               <i className="fas fa-arrow-down text-2xl" style={{ color: 'var(--color-danger)' }}></i>
@@ -183,7 +191,7 @@ const Analytics = () => {
                 className="text-2xl font-bold"
                 style={{ color: analyticsData.netIncome >= 0 ? 'var(--color-success)' : 'var(--color-danger)' }}
               >
-                ${analyticsData.netIncome.toLocaleString()}
+                {formatCurrency(analyticsData.netIncome)}
               </p>
             </div>
             <div 
@@ -228,7 +236,7 @@ const Analytics = () => {
                   <div key={category}>
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-sm font-medium" style={{ color: 'var(--text-body)' }}>{category}</span>
-                      <span className="text-sm font-semibold" style={{ color: 'var(--text-heading)' }}>${amount.toLocaleString()}</span>
+                      <span className="text-sm font-semibold" style={{ color: 'var(--text-heading)' }}>{formatCurrency(amount)}</span>
                     </div>
                     <div className="w-full rounded-full h-2" style={{ backgroundColor: 'var(--border-color)' }}>
                       <div
@@ -273,17 +281,17 @@ const Analytics = () => {
                       className="text-sm font-semibold"
                       style={{ color: net >= 0 ? 'var(--color-success)' : 'var(--color-danger)' }}
                     >
-                      ${net.toLocaleString()}
+                      {formatCurrency(net)}
                     </span>
                   </div>
                   <div className="grid grid-cols-2 gap-4 text-xs">
                     <div className="flex justify-between">
                       <span style={{ color: 'var(--color-success)' }}>Income:</span>
-                      <span style={{ color: 'var(--color-success)' }}>${income.toLocaleString()}</span>
+                      <span style={{ color: 'var(--color-success)' }}>{formatCurrency(income)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span style={{ color: 'var(--color-danger)' }}>Expenses:</span>
-                      <span style={{ color: 'var(--color-danger)' }}>${expenses.toLocaleString()}</span>
+                      <span style={{ color: 'var(--color-danger)' }}>{formatCurrency(expenses)}</span>
                     </div>
                   </div>
                   <div className="w-full rounded-full h-1" style={{ backgroundColor: 'var(--border-color)' }}>
@@ -320,7 +328,7 @@ const Analytics = () => {
                 <div className="h-3 w-3 rounded-full" style={{ backgroundColor: 'var(--color-success)' }}></div>
                 <span className="text-sm" style={{ color: 'var(--text-body)' }}>Income</span>
               </div>
-              <span className="text-sm font-semibold" style={{ color: 'var(--text-heading)' }}>${analyticsData.income.toLocaleString()}</span>
+              <span className="text-sm font-semibold" style={{ color: 'var(--text-heading)' }}>{formatCurrency(analyticsData.income)}</span>
             </div>
             
             <div className="flex items-center justify-between">
@@ -328,7 +336,7 @@ const Analytics = () => {
                 <div className="h-3 w-3 rounded-full" style={{ backgroundColor: 'var(--color-danger)' }}></div>
                 <span className="text-sm" style={{ color: 'var(--text-body)' }}>Expenses</span>
               </div>
-              <span className="text-sm font-semibold" style={{ color: 'var(--text-heading)' }}>${analyticsData.expenses.toLocaleString()}</span>
+              <span className="text-sm font-semibold" style={{ color: 'var(--text-heading)' }}>{formatCurrency(analyticsData.expenses)}</span>
             </div>
             
             <div className="w-full rounded-full h-4" style={{ backgroundColor: 'var(--border-color)' }}>
@@ -373,10 +381,10 @@ const Analytics = () => {
             {analyticsData.categoryData.length > 0 ? (
               <div className="space-y-2">
                 <p className="text-sm" style={{ color: 'var(--text-body)' }}>
-                  Your top spending category is <span className="font-semibold" style={{ color: 'var(--text-heading)' }}>{analyticsData.categoryData[0][0]}</span> at ${analyticsData.categoryData[0][1].toLocaleString()}.
+                  Your top spending category is <span className="font-semibold" style={{ color: 'var(--text-heading)' }}>{analyticsData.categoryData[0][0]}</span> at {formatCurrency(analyticsData.categoryData[0][1])}.
                 </p>
                 <p className="text-sm" style={{ color: 'var(--text-body)' }}>
-                  You spent ${analyticsData.expenses.toLocaleString()} in {analyticsData.categoryData.length} different categories.
+                  You spent {formatCurrency(analyticsData.expenses)} in {analyticsData.categoryData.length} different categories.
                 </p>
               </div>
             ) : (
@@ -395,7 +403,7 @@ const Analytics = () => {
                   className="font-semibold"
                   style={{ color: analyticsData.netIncome >= 0 ? 'var(--color-success)' : 'var(--color-danger)' }}
                 >
-                  ${analyticsData.netIncome.toLocaleString()}
+                  {formatCurrency(analyticsData.netIncome)}
                 </span>.
               </p>
               {analyticsData.income > 0 && (

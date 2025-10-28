@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { formatCurrency, getCurrencySymbol } from '../utils/formatters'
 import NotificationCenter from './NotificationCenter'
 import notificationService from '../utils/notificationService'
 
@@ -6,6 +7,7 @@ const Header = ({ sidebarOpen, setSidebarOpen, balance, user }) => {
   const [showBalance, setShowBalance] = useState(true)
   const [showNotifications, setShowNotifications] = useState(false)
   const [unreadCount, setUnreadCount] = useState(0)
+  const [settingsVersion, setSettingsVersion] = useState(0)
 
   useEffect(() => {
     // Load initial unread count
@@ -27,6 +29,12 @@ const Header = ({ sidebarOpen, setSidebarOpen, balance, user }) => {
       window.removeEventListener('allNotificationsRead', updateCount)
       window.removeEventListener('notificationsCleared', updateCount)
     }
+  }, [])
+
+  useEffect(() => {
+    const onSettingsChanged = () => setSettingsVersion(v => v + 1)
+    window.addEventListener('appSettingsChanged', onSettingsChanged)
+    return () => window.removeEventListener('appSettingsChanged', onSettingsChanged)
   }, [])
   
   // Get user initials
@@ -65,7 +73,12 @@ const Header = ({ sidebarOpen, setSidebarOpen, balance, user }) => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
-            <h1 className="ml-2 text-xl font-semibold" style={{ color: 'var(--text-heading)' }}>Finance Tracker</h1>
+            <span className="ml-2 mr-2 inline-flex items-center justify-center h-8 w-8 rounded-lg" style={{ backgroundColor: 'var(--hover-bg)' }}>
+              <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" style={{ color: 'var(--color-brand)' }}>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12h18M5 8h10M7 16h6"/>
+              </svg>
+            </span>
+            <h1 className="text-xl font-semibold" style={{ color: 'var(--text-heading)' }}>Finance Tracker</h1>
           </div>
 
           {/* Right side - Balance and user menu */}
@@ -82,11 +95,11 @@ const Header = ({ sidebarOpen, setSidebarOpen, balance, user }) => {
                 onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--hover-bg)'}
                 onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--bg-secondary)'}
               >
-                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ color: 'var(--color-brand)' }}>
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                </svg>
+                <span className="h-6 w-6 rounded-md flex items-center justify-center text-xs font-semibold" style={{ backgroundColor: 'var(--hover-bg)', color: 'var(--color-brand)' }}>
+                  {getCurrencySymbol()}
+                </span>
                 <span className="text-sm font-medium" style={{ color: 'var(--color-brand)' }}>
-                  {showBalance ? `$${balance.toLocaleString()}` : '••••••'}
+                  {showBalance ? formatCurrency(balance) : '••••••'}
                 </span>
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ color: 'var(--color-brand)' }}>
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={showBalance ? "M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" : "M15 12a3 3 0 11-6 0 3 3 0 016 0z"} />

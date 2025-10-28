@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { formatCurrency, formatDate } from '../utils/formatters'
 
 const Dashboard = ({ transactions = [], balance = 0 }) => {
   const [timeRange, setTimeRange] = useState('month')
@@ -92,7 +93,7 @@ const Dashboard = ({ transactions = [], balance = 0 }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium" style={{ color: 'var(--text-muted)' }}>Total Balance</p>
-              <p className="text-2xl font-bold mt-1" style={{ color: 'var(--text-heading)' }}>${balance.toLocaleString()}</p>
+              <p className="text-2xl font-bold mt-1" style={{ color: 'var(--text-heading)' }}>{formatCurrency(balance)}</p>
             </div>
             <div className="h-12 w-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'var(--color-success)', opacity: 0.1 }}>
               <i className="fas fa-wallet text-2xl" style={{ color: 'var(--color-success)' }}></i>
@@ -111,7 +112,7 @@ const Dashboard = ({ transactions = [], balance = 0 }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium" style={{ color: 'var(--text-muted)' }}>Income</p>
-              <p className="text-2xl font-bold mt-1" style={{ color: 'var(--color-success)' }}>${metrics.income.toLocaleString()}</p>
+              <p className="text-2xl font-bold mt-1" style={{ color: 'var(--color-success)' }}>{formatCurrency(metrics.income)}</p>
             </div>
             <div className="h-12 w-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'var(--color-success)', opacity: 0.1 }}>
               <i className="fas fa-arrow-up text-2xl" style={{ color: 'var(--color-success)' }}></i>
@@ -130,7 +131,7 @@ const Dashboard = ({ transactions = [], balance = 0 }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium" style={{ color: 'var(--text-muted)' }}>Expenses</p>
-              <p className="text-2xl font-bold mt-1" style={{ color: 'var(--color-danger)' }}>${metrics.expenses.toLocaleString()}</p>
+              <p className="text-2xl font-bold mt-1" style={{ color: 'var(--color-danger)' }}>{formatCurrency(metrics.expenses)}</p>
             </div>
             <div className="h-12 w-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'var(--color-danger)', opacity: 0.1 }}>
               <i className="fas fa-arrow-down text-2xl" style={{ color: 'var(--color-danger)' }}></i>
@@ -153,7 +154,7 @@ const Dashboard = ({ transactions = [], balance = 0 }) => {
                 className="text-2xl font-bold mt-1"
                 style={{ color: metrics.netIncome >= 0 ? 'var(--color-success)' : 'var(--color-danger)' }}
               >
-                ${metrics.netIncome.toLocaleString()}
+                {formatCurrency(metrics.netIncome)}
               </p>
             </div>
             <div 
@@ -202,7 +203,7 @@ const Dashboard = ({ transactions = [], balance = 0 }) => {
                     ></div>
                     <span className="text-sm font-medium" style={{ color: 'var(--text-body)' }}>{category}</span>
                   </div>
-                  <span className="text-sm font-semibold" style={{ color: 'var(--text-heading)' }}>${amount.toLocaleString()}</span>
+                  <span className="text-sm font-semibold" style={{ color: 'var(--text-heading)' }}>{formatCurrency(amount)}</span>
                 </div>
               ))
             )}
@@ -229,14 +230,18 @@ const Dashboard = ({ transactions = [], balance = 0 }) => {
                     <div 
                       className="h-8 w-8 rounded-full flex items-center justify-center"
                       style={{
-                        backgroundColor: transaction.type === 'income' ? 'var(--color-success)' : 'var(--color-danger)',
-                        opacity: 0.1
+                        backgroundColor: transaction.type === 'income' ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)'
                       }}
                     >
-                      <i 
-                        className={`fas ${transaction.type === 'income' ? 'fa-arrow-up' : 'fa-arrow-down'} text-sm`}
-                        style={{ color: transaction.type === 'income' ? 'var(--color-success)' : 'var(--color-danger)' }}
-                      ></i>
+                      {transaction.type === 'income' ? (
+                        <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" style={{ color: 'var(--color-success)' }}>
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 10l7-7 7 7M12 3v18" />
+                        </svg>
+                      ) : (
+                        <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" style={{ color: 'var(--color-danger)' }}>
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7-7-7M12 3v18" />
+                        </svg>
+                      )}
                     </div>
                     <div>
                       <p className="text-sm font-medium" style={{ color: 'var(--text-heading)' }}>{transaction.description}</p>
@@ -248,9 +253,9 @@ const Dashboard = ({ transactions = [], balance = 0 }) => {
                       className="text-sm font-semibold"
                       style={{ color: transaction.type === 'income' ? 'var(--color-success)' : 'var(--color-danger)' }}
                     >
-                      {transaction.type === 'income' ? '+' : '-'}${Math.abs(transaction.amount).toLocaleString()}
+                      {transaction.type === 'income' ? '+' : '-'}{formatCurrency(Math.abs(transaction.amount))}
                     </p>
-                    <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{new Date(transaction.date).toLocaleDateString()}</p>
+                    <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{formatDate(transaction.date)}</p>
                   </div>
                 </div>
               ))
