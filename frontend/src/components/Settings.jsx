@@ -3,6 +3,19 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getTransactions, getTransactionStats, createTransaction } from '../store/slices/transactionSlice'
 import { updatePassword as updatePasswordThunk } from '../store/slices/authSlice'
 
+const CURRENT_SETTINGS_VERSION = 2
+
+const DEFAULT_SETTINGS = {
+  currency: 'INR',
+  dateFormat: 'MM/DD/YYYY',
+  notifications: false,
+  notificationSounds: false,
+  autoBackup: true,
+  budgetAlerts: false,
+  emailReports: false,
+  settingsVersion: CURRENT_SETTINGS_VERSION
+}
+
 const Settings = ({ darkMode, onToggleDarkMode }) => {
   const dispatch = useDispatch()
   const { user } = useSelector(state => state.auth)
@@ -12,17 +25,30 @@ const Settings = ({ darkMode, onToggleDarkMode }) => {
     // Load settings from localStorage
     const savedSettings = localStorage.getItem('appSettings')
     if (savedSettings) {
-      return JSON.parse(savedSettings)
+      try {
+        const parsed = JSON.parse(savedSettings)
+        let merged = { ...DEFAULT_SETTINGS, ...parsed }
+
+        const needsMigration = !parsed.settingsVersion || parsed.settingsVersion < CURRENT_SETTINGS_VERSION
+        if (needsMigration) {
+          merged = {
+            ...merged,
+            notifications: false,
+            notificationSounds: false,
+            budgetAlerts: false,
+            settingsVersion: CURRENT_SETTINGS_VERSION
+          }
+          localStorage.setItem('appSettings', JSON.stringify(merged))
+        }
+
+        return merged
+      } catch (err) {
+        console.warn('Failed to parse appSettings, resetting to defaults', err)
+      }
     }
-    return {
-      currency: 'INR',
-      dateFormat: 'MM/DD/YYYY',
-      notifications: true,
-      notificationSounds: true,
-      autoBackup: true,
-      budgetAlerts: true,
-      emailReports: false
-    }
+
+    localStorage.setItem('appSettings', JSON.stringify(DEFAULT_SETTINGS))
+    return DEFAULT_SETTINGS
   })
 
   const [showChangePassword, setShowChangePassword] = useState(false)
@@ -50,7 +76,8 @@ const Settings = ({ darkMode, onToggleDarkMode }) => {
     setSettings(prev => {
       const newSettings = {
         ...prev,
-        [key]: value
+        [key]: value,
+        settingsVersion: CURRENT_SETTINGS_VERSION
       }
       // Save to localStorage
       localStorage.setItem('appSettings', JSON.stringify(newSettings))
